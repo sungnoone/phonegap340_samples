@@ -49,6 +49,8 @@ var app = {
     }
 };
 
+/* Phonegap API -- Network Information */
+{
 document.addEventListener('online', checkConnection, false);
 
 
@@ -80,6 +82,7 @@ function scan() {
                   "2DScanning" : true}]);
 }
 
+
 /* Phonegap API -- Network Information */
 
 function checkConnection() {
@@ -98,8 +101,13 @@ function checkConnection() {
     alert('Connection type: ' + states[networkState]);
 }
 
-/* Phonegap API -- Network Information */
 
+}
+
+
+
+/* Phonegap API -- media */
+{
 // Record audio
 //
 function recordAudio() {
@@ -125,8 +133,9 @@ function recordAudio() {
     }, 10000);
 }
 
+
 // Play audio
-//
+// setVolume
 function playAudio() {
 
     var src = "1234.mp3";
@@ -163,12 +172,13 @@ function playAudio() {
 
 }
 
-
 // Audio player
-//
+// getCurrentPosition、getDuration
 function playAudio1(){
-
+    var src = "1234.mp3";
     var my_media = new Media(src, onSuccess, onError);
+    // Play audio
+    my_media.play();
 
     // Update media position every second
     var mediaTimer = setInterval(function () {
@@ -186,6 +196,76 @@ function playAudio1(){
             }
         );
     }, 1000);
+
+
+    function onSuccess() {
+        console.log("playAudio1 onSuccess.....");
+        var dur = my_media.getDuration();
+        console.log("音樂總長 " + dur);
+    }
+
+    function onError(error) {
+        console.log("playAudio1 onError....." + error);
+    }
+
 }
+
+}
+
+
+
+/* Phonegap API -- media capture */
+
+
+//captureAudio
+//
+function captureAudio(){
+    // capture callback
+    var captureSuccess = function(mediaFiles) {
+        var i, path, len;
+        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+            path = mediaFiles[i].fullPath;
+            // do something interesting with the file
+            console.log(path);
+        }
+    };
+
+    // capture error callback
+    var captureError = function(error) {
+        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+    };
+
+    // limit capture operation to 1 media files, no longer than 10 seconds each
+    var options = { limit: 1, duration: 10 };
+
+    // start audio capture
+    navigator.device.capture.captureAudio(captureSuccess, captureError, options);
+
+}
+
+//captureVideo
+//
+function captureVideo(){
+    // capture callback
+    var captureSuccess = function(mediaFiles) {
+        var i, path, len;
+        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+            path = mediaFiles[i].fullPath;
+            // do something interesting with the file
+        }
+    };
+
+    // capture error callback
+    var captureError = function(error) {
+        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+    };
+
+    // limit capture operation to 1 media files, no longer than 10 seconds each
+    var options = { limit: 1, duration: 20 };
+
+    // start video capture
+    navigator.device.capture.captureVideo(captureSuccess, captureError, options);
+}
+
 
 
